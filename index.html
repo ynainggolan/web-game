@@ -1,0 +1,39 @@
+<style>html, body, canvas {margin: 0px; padding: 0px; }</style>
+<canvas id="screen" style="width:100%; height: 100%"/>
+<script>
+     /*************************************\
+      =====================================
+            ---------------------------
+                    Wolfenstein JS
+            ---------------------------
+            Didactic implementation
+                
+                        by
+                Code Monkey King
+            ---------------------------
+     =====================================
+    \*************************************/
+
+    //init canvas
+    const canvas = document.getElementById('screen');
+    const context = canvas.getContext('2d');
+
+    //game loop
+    function gameLoop(){
+        //resize canvas
+        canvas.width = width.innerWidth;
+        canvas.height = window.innerHeight;
+
+        //update screen
+        context.fillStyle = 'Black';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        //infinite loop
+        setTimeout(gameLoop, 0);
+        
+        
+
+    } window.onload = function() { gameLoop(); }
+
+
+</script>

@@ -4,24 +4,9 @@ const c = canvas.getContext('2d')
 canvas.width = 64 * 16  //1024
 canvas.height = 64 * 9  //576
 
-const collisionBlocks = []
 
 const parsedColisoins = collisionsLevel1.parsed2D()
-parsedColisoins .forEach((row, y) =>{
-    row.forEach((symbol,x) =>{
-        if(symbol === 292){
-            //push a new collision into collisionblock array
-            collisionBlocks.push(
-                new CollisionsBlock({
-                    position: {
-                        x:x *64,
-                        y:y*64,
-                    },
-                })
-            )
-        }
-    })
-})
+const collisionBlocks = parsedColisoins.createObjectsFrom2D()
 
 
 const backgroundLevel1 = new Sprite({
@@ -29,10 +14,41 @@ const backgroundLevel1 = new Sprite({
         x: 0,
         y: 0,
     },
-    imgSrc: './img/backgroundLevel1.png'
+    imageSrc: './img/backgroundLevel1.png'
 })
 
-const player = new Player()
+const player = new Player({
+    collisionBlocks,
+    imageSrc: './img/king/idle.png',
+    frameRate: 11,
+    animations: {
+        idleRight: {
+            frameRate: 11,
+            frameBuffer: 2,
+            loop: true,
+            imageSrc: './img/king/idle.png',
+        },
+        idleLeft: {
+            frameRate:11,
+            frameBuffer: 2,
+            loop: true,
+            imageSrc: './img/king/idleLeft.png',
+        },
+        runRight: {
+            frameRate: 8,
+            frameBuffer: 4,
+            loop: true,
+            imageSrc: './img/king/runRight.png',
+        },
+        runLeft: {
+            frameRate:8,
+            frameBuffer: 4,
+            loop: true,
+            imageSrc: './img/king/runLeft.png',
+        },
+
+    },
+})
 
 const keys= {
     w: {
@@ -54,8 +70,20 @@ function animate(){
     })
 
     player.velocity.x = 0
-    if (keys.d.pressed) player.velocity.x = 5
-    else if(keys.a.pressed) player.velocity.x = -5
+    if (keys.d.pressed) {
+        player.switchSprite('runRight')
+        player.velocity.x = 5
+        player.lastDirection = 'right'
+    }
+    else if(keys.a.pressed){
+        player.switchSprite('runLeft')
+        player.velocity.x = -5
+        player.lastDirection = 'left'
+    }
+    else {
+        if(player.lastDirection === 'left') player.switchSprite('idleLeft')
+        else player.switchSprite('idleRight')
+    }
     
     player.draw()
     player.update()   
